@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item
+        android:id="@+id/optionTab"
+        android:title="New Tab" />
+    <item
+        android:id="@+id/optionBookmarks"
+        android:title="Bookmarks" />
+    <item
+        android:id="@+id/optionHistory"
+        android:title="History" />
+    <item
+        android:id="@+id/optionTools"
+        android:title="Tools" />
+    <item
+        android:id="@+id/optionSettings"
+        android:title="Settings" />
+    <item
+        android:id="@+id/opitonExit"
+        android:title="Exit" />
+</menu>
