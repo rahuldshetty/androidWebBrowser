@@ -55,6 +55,7 @@ public class Home extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String url = (datas.get(i).getUrl());
 
+                loadWebFragment(url);
 
             }
         });
@@ -69,6 +70,20 @@ public class Home extends Fragment {
 
     }
 
+
+    public void loadWebFragment(String url)
+    {
+        FragmentManager fm=getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        WebFragment frag = new WebFragment();
+        Bundle args = new Bundle();
+        args.putString("URL",url);
+        frag.setArguments(args);
+        MainActivity.webFragments.add(frag);
+        ft.replace(R.id.frameLayout, frag);
+        ft.commit();
+        MainActivity.curWebFragment++;
+    }
 
 
 

@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 /**
@@ -22,11 +24,13 @@ public class WebFragment extends Fragment {
 
     ProgressBar superProgressBar;
     ImageView superImage;
-    WebView webView;
+    TextView wtitle;
+    public WebView webView;
 
     String url;
 
     String webtitle;
+
 
     public WebFragment() {
         // Required empty public constructor
@@ -40,9 +44,12 @@ public class WebFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_web, container, false);
 
 
+
         superImage=view.findViewById(R.id.siteIcon);
         superProgressBar=view.findViewById(R.id.progressBar);
         webView = view.findViewById(R.id.myWebView);
+
+        wtitle=view.findViewById(R.id.webTitle);
 
         superProgressBar.setMax(100);
 
@@ -56,30 +63,30 @@ public class WebFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
+                if(webView.getUrl()!=null)
+                    MainActivity.urlSource.setText(webView.getUrl());
                 superProgressBar.setProgress(newProgress);
             }
 
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 super.onReceivedIcon(view, icon);
+
                 superImage.setImageBitmap(icon);
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                webtitle=title;
+                wtitle.setText(title);
             }
 
-
-
         });
-
-
-
 
         return view;
 
     }
+
+
 
 }

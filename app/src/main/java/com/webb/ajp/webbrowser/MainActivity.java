@@ -26,14 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
     FrameLayout frameLayout;
 
-    EditText urlSource;
+    public static EditText urlSource;
 
     TextView menuCount;
-    ImageView backBtn,fwdBtn,menuOptions;
+    public static ImageView backBtn,fwdBtn,menuOptions;
 
-    ArrayList<WebFragment> webFragments;
+    public static int curWebFragment=-1;
+
+    public static ArrayList<WebFragment> webFragments;
 
     GridView gdview;
+
+    Home home;
 
     public static Activity activity ;
 
@@ -73,15 +77,33 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WebFragment frag=webFragments.get(curWebFragment);
+                if(frag.webView.canGoBack()){
+                    frag.webView.goBack();
+                }
+                else
+                {
+                    webFragments.remove(curWebFragment);
+                    loadFragment(home);
+                    urlSource.setText("");
+                    curWebFragment=-1;
+                }
 
+
+            }
+        });
 
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("");
 
         if(savedInstanceState==null) {
-            Home frag=new Home();
-            loadFragment(frag);
+            home =new Home();
+            loadFragment(home);
+            curWebFragment=-1;
 
         }
 
@@ -99,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         webFragments.add(frag);
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
+        curWebFragment++;
     }
 
 
@@ -108,6 +131,24 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        WebFragment frag=webFragments.get(curWebFragment);
+        if(frag.webView.canGoBack()){
+            frag.webView.goBack();
+        }
+        else
+        {
+            webFragments.remove(curWebFragment);
+            loadFragment(home);
+            urlSource.setText("");
+            curWebFragment=-1;
+        }
+
 
     }
 }
