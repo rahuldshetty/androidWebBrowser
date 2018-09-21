@@ -73,6 +73,7 @@
         android:backgroundTint="#64ffffff"
         android:ems="10"
         android:hint="Search or Enter Address"
+        android:imeOptions="actionSend"
         android:inputType="textPersonName"
         android:textColor="@android:color/background_light"
         android:textColorHighlight="@android:color/background_light"

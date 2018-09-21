@@ -1,12 +1,16 @@
 package com.webb.ajp.webbrowser;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -21,9 +25,11 @@ import java.util.List;
  */
 public class Home extends Fragment {
 
-    GridView grid;
+    public GridView grid;
 
-    ArrayList<WebsiteData> datas;
+    static public ArrayList<WebsiteData> datas;
+
+    View view;
 
     public Home() {
         // Required empty public constructor
@@ -34,7 +40,7 @@ public class Home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+         view = inflater.inflate(R.layout.fragment_home, container, false);
 
         grid = view.findViewById(R.id.gridView);
         datas=new ArrayList<WebsiteData>();
@@ -42,6 +48,16 @@ public class Home extends Fragment {
         datas.add(new WebsiteData("https:www.google.com",R.drawable.icons8google480,"Google"));
         datas.add(new WebsiteData("https:www.youtube.com",R.drawable.icons8playbutto480,"Youtube"));
         datas.add(new WebsiteData("https:mobile.twitter.com",R.drawable.icons8twitter480,"Twitter"));
+
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String url = (datas.get(i).getUrl());
+
+
+            }
+        });
 
 
         WebsiteAdapter adapter=new WebsiteAdapter(this.getContext(),datas);
@@ -52,6 +68,8 @@ public class Home extends Fragment {
         return view;
 
     }
+
+
 
 
     public class WebsiteAdapter extends BaseAdapter{
@@ -97,9 +115,12 @@ public class Home extends Fragment {
                 textView.setText(websiteDataList.get(i).getTitle());
                 textView.setContentDescription(websiteDataList.get(i).getUrl());
                 imageView.setImageResource(websiteDataList.get(i).getImg());
+
             } else {
                 grid = (View) view;
             }
+
+
 
             return grid;
         }
