@@ -53,6 +53,8 @@ public class WebFragment extends Fragment {
 
         superProgressBar.setMax(100);
 
+        superProgressBar.setVisibility(View.INVISIBLE);
+
         url= getArguments().getString("URL");
 
         webView.loadUrl(url);
@@ -63,9 +65,19 @@ public class WebFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
+
+                if(newProgress!=100)
+                {
+                    superProgressBar.setVisibility(View.VISIBLE);
+                }
+
                 if(webView.getUrl()!=null)
                     MainActivity.urlSource.setText(webView.getUrl());
                 superProgressBar.setProgress(newProgress);
+                if(newProgress==100)
+                {
+                    superProgressBar.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override

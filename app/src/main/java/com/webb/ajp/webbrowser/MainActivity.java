@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     GridView gdview;
 
-    Home home;
+    public static Home home;
 
     public static Activity activity ;
 
@@ -76,11 +76,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fwdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(curWebFragment==-1)
+                {
+                    return;
+                }
+                WebFragment frag=webFragments.get(curWebFragment);
+                if(frag.webView.canGoForward())
+                {
+                    frag.webView.goForward();
+                }
+
+            }
+        });
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(curWebFragment==-1) {
+                    finish();
+                    return;
+                }
                 WebFragment frag=webFragments.get(curWebFragment);
+
                 if(frag.webView.canGoBack()){
                     frag.webView.goBack();
                 }
@@ -106,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             curWebFragment=-1;
 
         }
+        curWebFragment=-1;
 
     }
 
@@ -137,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+        if(curWebFragment==-1) {
+            finish();
+            return;
+        }
         WebFragment frag=webFragments.get(curWebFragment);
         if(frag.webView.canGoBack()){
             frag.webView.goBack();
