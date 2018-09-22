@@ -62,6 +62,9 @@ public class WebFragment extends Fragment {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient(){
 
+            Bitmap temp;
+            String tit;
+
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -83,14 +86,15 @@ public class WebFragment extends Fragment {
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 super.onReceivedIcon(view, icon);
-
                 superImage.setImageBitmap(icon);
+                temp=icon;
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
                 wtitle.setText(title);
+                tit=title;
             }
 
         });

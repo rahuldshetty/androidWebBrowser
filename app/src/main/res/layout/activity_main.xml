@@ -19,6 +19,8 @@
 
     </android.support.v7.widget.Toolbar>
 
+
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
@@ -102,7 +104,7 @@
         app:srcCompat="@drawable/ic_arrow2" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/circleimg"
         android:layout_width="45dp"
         android:layout_height="41dp"
         android:layout_marginBottom="8dp"

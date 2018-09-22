@@ -1,6 +1,8 @@
 package com.webb.ajp.webbrowser;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static EditText urlSource;
 
-    TextView menuCount;
-    public static ImageView backBtn,fwdBtn,menuOptions;
+    public static TextView menuCount;
+    public static ImageView backBtn,fwdBtn,menuOptions,circleImg;
 
     public static int curWebFragment=-1;
 
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         mToolbar=findViewById(R.id.main_toolbar);
         frameLayout=findViewById(R.id.frameLayout);
 
@@ -62,7 +66,25 @@ public class MainActivity extends AppCompatActivity {
         menuCount=findViewById(R.id.menu_count);
         urlSource=findViewById(R.id.urlSource);
 
+        circleImg=findViewById(R.id.circleimg);
+
         webFragments=new ArrayList<WebFragment>();
+
+        menuCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToTabs();
+            }
+        });
+
+
+
+        circleImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToTabs();
+            }
+        });
 
 
         urlSource.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -133,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    void goToTabs(){
+        Intent tab=new Intent(MainActivity.this,WebTabs.class);
+        startActivity(tab);
+
+    }
 
     public void loadWebFragment(String url)
     {
@@ -146,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
         curWebFragment++;
+
+
+
     }
+
 
 
 
@@ -179,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
