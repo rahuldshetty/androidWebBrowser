@@ -33,6 +33,9 @@ public class WebTabs extends AppCompatActivity {
 
     public static TabAdapter adapter;
 
+    public boolean isRemovedTab = false;
+    public int removedTab=-1;
+
     public static ArrayList<TabData> tabss=new ArrayList<TabData>();;
 
 
@@ -50,12 +53,7 @@ public class WebTabs extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeB=new Intent(WebTabs.this,MainActivity.class);
-                homeB.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                MainActivity.curWebFragment=-1;
-                startActivity(homeB);
-                finish();
+               loadMain();
 
 
             }
@@ -74,8 +72,15 @@ public class WebTabs extends AppCompatActivity {
 
                 TabData dt = (TabData) adapterView.getAdapter().getItem(i);
 
+                mc.putExtra("URLfromTAB",dt.getDesc());
+                mc.putExtra("SELECTEDFRAG",i);
+                mc.putExtra("TOADD",false);
+                MainActivity.curWebFragment=i;
+
 
                 startActivity(mc);
+
+
             }
         });
 
@@ -105,6 +110,14 @@ public class WebTabs extends AppCompatActivity {
     }
 
 
+    public void loadMain(){
+        Intent homeB=new Intent(WebTabs.this,MainActivity.class);
+        homeB.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        MainActivity.curWebFragment=-1;
+        startActivity(homeB);
+        finish();
+    }
 
 
     public class TabAdapter extends ArrayAdapter<TabData> {
@@ -126,7 +139,7 @@ public class WebTabs extends AppCompatActivity {
 
         @NonNull
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
             if(convertView==null)
             {
@@ -137,16 +150,33 @@ public class WebTabs extends AppCompatActivity {
             TabData obj=data.get(position);
 
             TextView title,desc;
-            ImageView img;
+            ImageView img,cls;
 
             title=convertView.findViewById(R.id.tabTitle);
             desc=convertView.findViewById(R.id.tabdesc);
             img=convertView.findViewById(R.id.tabPic);
+            cls=convertView.findViewById(R.id.tabClose);
+
+
+
 
             title.setText(obj.getTitle());
             desc.setText(obj.getDesc());
             img.setImageBitmap(obj.getImage());
 
+
+            cls.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tabss.remove(position);
+                    CacheClass.removeFragment(position);
+                    adapter.notifyDataSetChanged();
+                    isRemovedTab=true;
+                    removedTab=position;
+                    MainActivity.refreshTabCount();
+
+                }
+            });
 
 
             return convertView;
@@ -155,8 +185,16 @@ public class WebTabs extends AppCompatActivity {
     }
 
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(isRemovedTab && MainActivity.curWebFragment==-1)
+        {
+            loadMain();
+        }
+        else if(isRemovedTab && removedTab==MainActivity.curWebFragment)
+        {
+            loadMain();
+        }
+    }
 }

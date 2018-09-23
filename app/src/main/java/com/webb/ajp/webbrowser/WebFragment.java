@@ -1,6 +1,7 @@
 package com.webb.ajp.webbrowser;
 
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -32,11 +35,19 @@ public class WebFragment extends Fragment {
     public String webtitle;
     public Bitmap img;
 
+    SQLiteDatabase mydatabase ;
 
+    public void setUrl(String ur)
+    {
+        url=ur;
+    }
 
     public WebFragment() {
         // Required empty public constructor
     }
+
+
+
 
 
     @Override
@@ -45,7 +56,7 @@ public class WebFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_web, container, false);
 
-
+        mydatabase = getActivity().openOrCreateDatabase("BROWESERDB",MODE_PRIVATE,null);
 
         superImage=view.findViewById(R.id.siteIcon);
         superProgressBar=view.findViewById(R.id.progressBar);
@@ -57,7 +68,15 @@ public class WebFragment extends Fragment {
 
         superProgressBar.setVisibility(View.INVISIBLE);
 
-        url= getArguments().getString("URL");
+        if(getArguments()!=null)
+            url= getArguments().getString("URL");
+        else
+            url="https://www.google.com";
+
+        registerForContextMenu(webView);
+
+
+
 
         webView.loadUrl(url);
         webView.getSettings().setJavaScriptEnabled(true);

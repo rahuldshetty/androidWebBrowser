@@ -2,6 +2,8 @@ package com.webb.ajp.webbrowser;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,16 +46,36 @@ public class MainActivity extends AppCompatActivity {
 
     GridView gdview;
 
+    String urlTemp=null;
+    int selectFrag;
+    boolean toadd;
+
     public static Home home;
 
     public static Activity activity ;
+    static FragmentManager  fragmentManager;
+    static FragmentTransaction fragmentTransaction;
+
+
+    public SQLiteDatabase mydatabase ;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mydatabase= openOrCreateDatabase("BROWESERDB",MODE_PRIVATE,null);
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS BOOKMARKS(title  varchar(50),url VARCHAR(10000),id int);");
 
+        if(getIntent().getExtras()!=null) {
+            urlTemp = getIntent().getExtras().getString("URLfromTAB");
+            selectFrag=getIntent().getExtras().getInt("SELECTEDFRAG");
+            toadd=getIntent().getExtras().getBoolean("TOADD");
+        }
+
+        fragmentManager=getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
 
 
 
@@ -96,7 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 boolean handled = false;
                 if(i== EditorInfo.IME_ACTION_SEND)
                 {
-                    loadWebFragment(urlSource.getText().toString());
+                    if(curWebFragment==-1)
+                        loadWebFragment(urlSource.getText().toString());
+                    else{
+                        WebFragment webFragment=CacheClass.getWebFragments().get(curWebFragment);
+                        webFragment.webView.loadUrl(urlSource.getText().toString());
+                        webFragment.setUrl(urlSource.getText().toString());
+                    }
                     handled=true;
                 }
 
@@ -134,7 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    webFragments.remove(curWebFragment);
+                    CacheClass.removeFragment(curWebFragment);
+                    webFragments=CacheClass.getWebFragments();
                     loadFragment(home);
                     urlSource.setText("");
                     curWebFragment=-1;
@@ -156,7 +186,17 @@ public class MainActivity extends AppCompatActivity {
         }
         curWebFragment=-1;
 
+
+        if(urlTemp!=null)
+        {
+            loadWebview(urlTemp,toadd);
+            urlTemp=null;
+            curWebFragment=selectFrag;
+        }
+
     }
+
+
 
     void goToTabs(){
         Intent tab=new Intent(MainActivity.this,WebTabs.class);
@@ -177,10 +217,24 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
         curWebFragment++;
+        refreshTabCount();
 
     }
 
+    public static void loadWebview(String url ,boolean add){
+        WebFragment frag = new WebFragment();
+        Bundle args = new Bundle();
+        args.putString("URL",url);
+        frag.setArguments(args);
+        fragmentTransaction.replace(R.id.frameLayout, frag);
+        fragmentTransaction.commit();
 
+        if(add)
+        {
+            CacheClass.addToWebFragment(frag);
+        }
+        refreshTabCount();
+    }
 
 
     public void loadFragment(Fragment frag){
@@ -188,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
+        refreshTabCount();
     }
 
 
@@ -204,16 +259,20 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            webFragments.remove(curWebFragment);
+            CacheClass.removeFragment(curWebFragment);
+            webFragments=CacheClass.getWebFragments();
             loadFragment(home);
             urlSource.setText("");
             curWebFragment=-1;
         }
-
+        refreshTabCount();
 
     }
 
 
+    public static void refreshTabCount(){
+        menuCount.setText(CacheClass.getSize()+"");
+    }
 
 
     @Override
@@ -222,6 +281,16 @@ public class MainActivity extends AppCompatActivity {
         {
             case R.id.opitonExit:
                 finish();
+                break;
+
+            case R.id.optionTab:
+                loadWebFragment("");
+                break;
+
+            case R.id.optionBookmarks:
+                Intent bookmark=new Intent(MainActivity.this,Bookmarks.class);
+                startActivity(bookmark);
+                break;
 
 
 
@@ -230,11 +299,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.webBookmark:
+                Cursor resultSet = mydatabase.rawQuery("Select * from BOOKMARKS",null);
+                int count=resultSet.getCount();
+                String titl = webFragments.get(curWebFragment).webtitle;
+                String curURL = urlSource.getText().toString();
+                mydatabase.execSQL("INSERT INTO BOOKMARKS VALUES(" +"'"+ titl  +"'"  + ",'"+curURL+"',"+count+");");
+                resultSet.close();
+                break;
+
+
+        }
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.optionmenu, menu);
         return super.onCreateOptionsMenu(menu);
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.webviewmenu, menu);
     }
 }
 

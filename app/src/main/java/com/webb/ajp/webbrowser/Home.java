@@ -83,6 +83,7 @@ public class Home extends Fragment {
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
         MainActivity.curWebFragment++;
+        MainActivity.refreshTabCount();
     }
 
 

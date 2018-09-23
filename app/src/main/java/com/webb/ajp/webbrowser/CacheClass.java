@@ -21,5 +21,7 @@ public class CacheClass {
         return webFragments.size();
     }
 
+    public static void removeFragment(int i){ webFragments.remove(i);  }
+
 
 }
