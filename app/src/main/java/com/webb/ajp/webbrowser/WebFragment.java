@@ -27,9 +27,11 @@ public class WebFragment extends Fragment {
     TextView wtitle;
     public WebView webView;
 
-    String url;
+    public String url;
 
-    String webtitle;
+    public String webtitle;
+    public Bitmap img;
+
 
 
     public WebFragment() {
@@ -62,8 +64,7 @@ public class WebFragment extends Fragment {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient(){
 
-            Bitmap temp;
-            String tit;
+
 
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -87,14 +88,14 @@ public class WebFragment extends Fragment {
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 super.onReceivedIcon(view, icon);
                 superImage.setImageBitmap(icon);
-                temp=icon;
+                img=icon;
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
                 wtitle.setText(title);
-                tit=title;
+                webtitle=title;
             }
 
         });

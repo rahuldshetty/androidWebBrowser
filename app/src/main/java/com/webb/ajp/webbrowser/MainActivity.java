@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int curWebFragment=-1;
 
-    public static ArrayList<WebFragment> webFragments;
+    public ArrayList<WebFragment> webFragments;
 
     GridView gdview;
 
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -68,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
         circleImg=findViewById(R.id.circleimg);
 
-        webFragments=new ArrayList<WebFragment>();
+
+
+        webFragments=CacheClass.getWebFragments();
 
         menuCount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     void goToTabs(){
         Intent tab=new Intent(MainActivity.this,WebTabs.class);
         startActivity(tab);
+        WebTabs.loadTabs();
 
     }
 
@@ -173,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
         curWebFragment++;
-
-
 
     }
 

@@ -79,7 +79,7 @@ public class Home extends Fragment {
         Bundle args = new Bundle();
         args.putString("URL",url);
         frag.setArguments(args);
-        MainActivity.webFragments.add(frag);
+        CacheClass.addToWebFragment(frag);
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
         MainActivity.curWebFragment++;
