@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mydatabase= openOrCreateDatabase("BROWESERDB",MODE_PRIVATE,null);
         mydatabase.execSQL("CREATE TABLE IF NOT EXISTS BOOKMARKS(title  varchar(50),url VARCHAR(10000),id int);");
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS HISTORY(title  varchar(50),url VARCHAR(10000),times DATETIME DEFAULT CURRENT_TIMESTAMP);");
 
         if(getIntent().getExtras()!=null) {
             urlTemp = getIntent().getExtras().getString("URLfromTAB");
@@ -290,6 +291,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.optionBookmarks:
                 Intent bookmark=new Intent(MainActivity.this,Bookmarks.class);
                 startActivity(bookmark);
+                break;
+
+            case R.id.optionHistory:
+                Intent history=new Intent(MainActivity.this,History.class);
+                startActivity(history);
                 break;
 
 

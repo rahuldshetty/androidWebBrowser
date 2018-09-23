@@ -21,7 +21,8 @@
         <activity
             android:name=".WebTabs"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".Bookmarks"></activity>
+        <activity android:name=".Bookmarks" />
+        <activity android:name=".History"></activity>
     </application>
 
 </manifest>

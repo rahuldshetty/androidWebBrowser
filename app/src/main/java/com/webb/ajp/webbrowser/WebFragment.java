@@ -58,6 +58,8 @@ public class WebFragment extends Fragment {
 
         mydatabase = getActivity().openOrCreateDatabase("BROWESERDB",MODE_PRIVATE,null);
 
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS HISTORY(title  varchar(50),url VARCHAR(10000),times DATETIME DEFAULT CURRENT_TIMESTAMP);");
+
         superImage=view.findViewById(R.id.siteIcon);
         superProgressBar=view.findViewById(R.id.progressBar);
         webView = view.findViewById(R.id.myWebView);
@@ -100,6 +102,8 @@ public class WebFragment extends Fragment {
                 if(newProgress==100)
                 {
                     superProgressBar.setVisibility(View.INVISIBLE);
+                    if(url!="")
+                        mydatabase.execSQL("INSERT INTO HISTORY VALUES(" +"'"+ webtitle  +"'"  + ",'"+url+"'" +",datetime()"+");" );
                 }
             }
 
