@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,6 +39,8 @@ public class WebFragment extends Fragment {
     ImageView superImage;
     TextView wtitle;
     public WebView webView;
+
+
 
     public String url;
 
@@ -116,13 +119,13 @@ public class WebFragment extends Fragment {
 
 
 
-
                 }
             }
 
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 super.onReceivedIcon(view, icon);
+
                 superImage.setImageBitmap(icon);
                 img=icon;
             }

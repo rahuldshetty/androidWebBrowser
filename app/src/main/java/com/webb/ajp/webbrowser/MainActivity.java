@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Environment;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public SQLiteDatabase mydatabase ;
 
 
-
+    public static String defaultURL = "https://www.google.com/search?q=";
 
 
     @Override
@@ -138,9 +140,15 @@ public class MainActivity extends AppCompatActivity {
                     if(CacheClass.cureWebFragment==-1)
                         loadWebFragment(urlSource.getText().toString());
                     else{
+
+                        String url =urlSource.getText().toString();
+                        if(!isValid(url))
+                        {
+                            url=defaultURL+url;
+                        }
                         WebFragment webFragment=CacheClass.getWebFragments().get(CacheClass.cureWebFragment);
-                        webFragment.webView.loadUrl(urlSource.getText().toString());
-                        webFragment.setUrl(urlSource.getText().toString());
+                        webFragment.webView.loadUrl(url);
+                        webFragment.setUrl(url);
                     }
                     handled=true;
                 }
@@ -227,6 +235,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public static boolean isValid(String url)
+    {
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
 
     void goToTabs(){
         Intent tab=new Intent(MainActivity.this,WebTabs.class);
@@ -236,6 +255,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadWebFragment(String url)
     {
+
+        if(!isValid(url))
+        {
+            url=defaultURL+url;
+        }
+
         FragmentManager fm=getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         WebFragment frag = new WebFragment();
@@ -338,6 +363,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(history);
                 break;
 
+            case R.id.optionSettings:
+                Intent settings=new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(settings);
+                break;
+
 
 
         }
@@ -360,7 +390,26 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.webSaveAsPDF:
 
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
 
+                    PrintManager printManager = (PrintManager) this
+                            .getSystemService(Context.PRINT_SERVICE);
+
+                    PrintDocumentAdapter printAdapter =
+                            webFragments.get(CacheClass.cureWebFragment).webView.createPrintDocumentAdapter();
+
+                    String jobName = getString(R.string.app_name) + " Print Test";
+
+                    if (printManager != null) {
+                        printManager.print(jobName, printAdapter,
+                                new PrintAttributes.Builder().build());
+                    }
+
+                } else {
+
+
+
+                }
 
 
 
