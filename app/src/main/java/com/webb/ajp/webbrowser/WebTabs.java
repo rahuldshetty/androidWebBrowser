@@ -75,7 +75,8 @@ public class WebTabs extends AppCompatActivity {
                 mc.putExtra("URLfromTAB",dt.getDesc());
                 mc.putExtra("SELECTEDFRAG",i);
                 mc.putExtra("TOADD",false);
-                MainActivity.curWebFragment=i;
+                MainActivity.curWebFragmentIsNewPage=true;
+
 
 
                 startActivity(mc);
@@ -84,6 +85,7 @@ public class WebTabs extends AppCompatActivity {
             }
         });
 
+        loadTabs();
 
     }
 
@@ -98,7 +100,7 @@ public class WebTabs extends AppCompatActivity {
 
                 TabData obj=null;
 
-                obj = new TabData(w.img,w.webtitle,w.url);
+                obj = new TabData(w.webView.getFavicon(),w.webView.getTitle(),w.webView.getUrl());
 
                 if(obj!=null)
                     tabss.add(obj);
@@ -114,7 +116,7 @@ public class WebTabs extends AppCompatActivity {
         Intent homeB=new Intent(WebTabs.this,MainActivity.class);
         homeB.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        MainActivity.curWebFragment=-1;
+        CacheClass.cureWebFragment=-1;
         startActivity(homeB);
         finish();
     }
@@ -188,11 +190,11 @@ public class WebTabs extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(isRemovedTab && MainActivity.curWebFragment==-1)
+        if(isRemovedTab && CacheClass.cureWebFragment==-1)
         {
             loadMain();
         }
-        else if(isRemovedTab && removedTab==MainActivity.curWebFragment)
+        else if(isRemovedTab && removedTab==CacheClass.cureWebFragment)
         {
             loadMain();
         }

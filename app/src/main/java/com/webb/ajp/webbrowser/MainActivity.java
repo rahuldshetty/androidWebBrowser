@@ -40,15 +40,16 @@ public class MainActivity extends AppCompatActivity {
     public static TextView menuCount;
     public static ImageView backBtn,fwdBtn,menuOptions,circleImg;
 
-    public static int curWebFragment=-1;
+    public static boolean curWebFragmentIsNewPage=false;
+
 
     public ArrayList<WebFragment> webFragments;
 
     GridView gdview;
 
     String urlTemp=null;
-    int selectFrag;
-    boolean toadd;
+   static int selectFrag;
+   static boolean toadd;
 
     public static Home home;
 
@@ -120,10 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 boolean handled = false;
                 if(i== EditorInfo.IME_ACTION_SEND)
                 {
-                    if(curWebFragment==-1)
+                    if(CacheClass.cureWebFragment==-1)
                         loadWebFragment(urlSource.getText().toString());
                     else{
-                        WebFragment webFragment=CacheClass.getWebFragments().get(curWebFragment);
+                        WebFragment webFragment=CacheClass.getWebFragments().get(CacheClass.cureWebFragment);
                         webFragment.webView.loadUrl(urlSource.getText().toString());
                         webFragment.setUrl(urlSource.getText().toString());
                     }
@@ -137,11 +138,16 @@ public class MainActivity extends AppCompatActivity {
         fwdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(curWebFragment==-1)
+                if(CacheClass.cureWebFragment==-1)
                 {
                     return;
                 }
-                WebFragment frag=webFragments.get(curWebFragment);
+                if(curWebFragmentIsNewPage)
+                {
+                    return;
+                }
+
+                WebFragment frag=webFragments.get(CacheClass.cureWebFragment);
                 if(frag.webView.canGoForward())
                 {
                     frag.webView.goForward();
@@ -153,22 +159,30 @@ public class MainActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(curWebFragment==-1) {
+                if(CacheClass.cureWebFragment==-1) {
                     finish();
                     return;
                 }
-                WebFragment frag=webFragments.get(curWebFragment);
 
-                if(frag.webView.canGoBack()){
+                if(curWebFragmentIsNewPage)
+                {
+                   return;
+                }
+
+                WebFragment frag=webFragments.get(CacheClass.cureWebFragment);
+
+                if(frag.webView.canGoBack() ){
                     frag.webView.goBack();
+
                 }
                 else
                 {
-                    CacheClass.removeFragment(curWebFragment);
+                    CacheClass.removeFragment(CacheClass.cureWebFragment);
                     webFragments=CacheClass.getWebFragments();
                     loadFragment(home);
                     urlSource.setText("");
-                    curWebFragment=-1;
+                    CacheClass.cureWebFragment=-1;
+                    curWebFragmentIsNewPage=false;
                 }
 
 
@@ -182,17 +196,18 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState==null) {
             home =new Home();
             loadFragment(home);
-            curWebFragment=-1;
+            CacheClass.cureWebFragment=-1;
 
         }
-        curWebFragment=-1;
+
 
 
         if(urlTemp!=null)
         {
             loadWebview(urlTemp,toadd);
             urlTemp=null;
-            curWebFragment=selectFrag;
+            CacheClass.cureWebFragment=CacheClass.getSize();
+            webFragments=CacheClass.getWebFragments();
         }
 
     }
@@ -202,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
     void goToTabs(){
         Intent tab=new Intent(MainActivity.this,WebTabs.class);
         startActivity(tab);
-        WebTabs.loadTabs();
 
     }
 
@@ -217,7 +231,9 @@ public class MainActivity extends AppCompatActivity {
         webFragments.add(frag);
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
-        curWebFragment++;
+
+        CacheClass.cureWebFragment++;
+
         refreshTabCount();
 
     }
@@ -230,10 +246,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frameLayout, frag);
         fragmentTransaction.commit();
 
-        if(add)
+
+        if(!add)
         {
+            CacheClass.webFragments.set(selectFrag,frag);
+        }
+        else{
             CacheClass.addToWebFragment(frag);
         }
+
         refreshTabCount();
     }
 
@@ -250,21 +271,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if(curWebFragment==-1) {
+        if(CacheClass.cureWebFragment==-1) {
             finish();
             return;
         }
-        WebFragment frag=webFragments.get(curWebFragment);
+        if(curWebFragmentIsNewPage)
+        {
+            return;
+        }
+
+        WebFragment frag=webFragments.get(CacheClass.cureWebFragment);
         if(frag.webView.canGoBack()){
             frag.webView.goBack();
         }
         else
         {
-            CacheClass.removeFragment(curWebFragment);
+            CacheClass.removeFragment(CacheClass.cureWebFragment);
             webFragments=CacheClass.getWebFragments();
             loadFragment(home);
             urlSource.setText("");
-            curWebFragment=-1;
+            CacheClass.cureWebFragment=-1;
         }
         refreshTabCount();
 
@@ -311,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.webBookmark:
                 Cursor resultSet = mydatabase.rawQuery("Select * from BOOKMARKS",null);
                 int count=resultSet.getCount();
-                String titl = webFragments.get(curWebFragment).webtitle;
+                String titl = webFragments.get(CacheClass.cureWebFragment).webtitle;
                 String curURL = urlSource.getText().toString();
                 mydatabase.execSQL("INSERT INTO BOOKMARKS VALUES(" +"'"+ titl  +"'"  + ",'"+curURL+"',"+count+");");
                 resultSet.close();

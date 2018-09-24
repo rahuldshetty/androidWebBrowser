@@ -82,7 +82,8 @@ public class Home extends Fragment {
         CacheClass.addToWebFragment(frag);
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
-        MainActivity.curWebFragment++;
+        CacheClass.cureWebFragment=CacheClass.getSize()-1;
+        //-****s ++
         MainActivity.refreshTabCount();
     }
 

@@ -103,7 +103,11 @@ public class WebFragment extends Fragment {
                 {
                     superProgressBar.setVisibility(View.INVISIBLE);
                     if(url!="")
-                        mydatabase.execSQL("INSERT INTO HISTORY VALUES(" +"'"+ webtitle  +"'"  + ",'"+url+"'" +",datetime()"+");" );
+                        mydatabase.execSQL("INSERT INTO HISTORY VALUES(" +"'"+ webtitle  +"'"  + ",'"+url+"'" +",datetime('now','localtime')"+");" );
+
+
+
+
                 }
             }
 
