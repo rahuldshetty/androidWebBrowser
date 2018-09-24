@@ -13,9 +13,6 @@
         android:id="@+id/optionHistory"
         android:title="History" />
     <item
-        android:id="@+id/optionTools"
-        android:title="Tools" />
-    <item
         android:id="@+id/optionSettings"
         android:title="Settings" />
     <item

@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -38,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
     public static EditText urlSource;
 
     public static TextView menuCount;
-    public static ImageView backBtn,fwdBtn,menuOptions,circleImg;
+    public static ImageView backBtn,fwdBtn,circleImg;
 
     public static boolean curWebFragmentIsNewPage=false;
 
 
     public ArrayList<WebFragment> webFragments;
 
-    GridView gdview;
+
 
     String urlTemp=null;
    static int selectFrag;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public SQLiteDatabase mydatabase ;
+
+
 
 
 
@@ -355,6 +358,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
 
     }
+
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

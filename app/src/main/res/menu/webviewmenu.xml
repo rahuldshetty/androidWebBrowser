@@ -5,4 +5,7 @@
     <item
         android:id="@+id/webBookmark"
         android:title="Bookmark this Page" />
+    <item
+        android:id="@+id/webSaveAsPDF"
+        android:title="Save Page as PDF" />
 </menu>
