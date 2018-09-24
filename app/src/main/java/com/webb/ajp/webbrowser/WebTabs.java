@@ -18,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.StackView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -28,10 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebTabs extends AppCompatActivity {
-    public static ListView tabList;
+   // public static ListView tabList;
+    public static StackView tabList;
     ImageView homeBtn;
 
-    public static TabAdapter adapter;
+    public static StackAdapter adapter;
+
+
+    public static boolean goToMain=false;
 
     public boolean isRemovedTab = false;
     public int removedTab=-1;
@@ -46,7 +52,7 @@ public class WebTabs extends AppCompatActivity {
 
         homeBtn=findViewById(R.id.homeBtn);
 
-        tabList=findViewById(R.id.tabList);
+        tabList=findViewById(R.id.stackView);
 
 
 
@@ -59,7 +65,7 @@ public class WebTabs extends AppCompatActivity {
             }
         });
 
-        adapter=new TabAdapter(this,R.layout.tab_single,tabss);;
+        adapter=new StackAdapter(this,tabss);;
 
 
 
@@ -93,8 +99,9 @@ public class WebTabs extends AppCompatActivity {
         {
             if(adapter==null)return;
 
-            adapter.clear();
+
             tabss.clear();
+
             for(WebFragment w:CacheClass.getWebFragments())
             {
 
@@ -119,6 +126,105 @@ public class WebTabs extends AppCompatActivity {
         CacheClass.cureWebFragment=-1;
         startActivity(homeB);
         finish();
+    }
+
+
+    public class StackAdapter extends BaseAdapter{
+
+        ArrayList<TabData> datas=null;
+        private Context mContext;
+
+        StackAdapter( Context c , ArrayList<TabData> data){
+            mContext=c;
+            datas=data;
+        }
+
+
+
+        @Override
+        public int getCount() {
+            return datas.size();
+        }
+
+        @Override
+        public TabData getItem(int i) {
+            return datas.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int position, View view, ViewGroup viewGroup) {
+            View grid;
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if(goToMain)
+            {
+
+                goToMain=false;
+                loadMain();
+            }
+
+
+            if (view == null ) {
+
+                grid = new View(mContext);
+                grid = inflater.inflate(R.layout.tabstacksingle, null);
+
+                if(tabss.size()==0)
+                {
+                    grid.setVisibility(View.INVISIBLE);
+                    grid.setEnabled(false);
+                    return grid ;
+
+                }
+
+                TabData obj=datas.get(position);
+
+                TextView title,desc;
+                ImageView img,cls;
+
+                title=grid.findViewById(R.id.tabTitle);
+                desc=grid.findViewById(R.id.tabdesc);
+                img=grid.findViewById(R.id.tabPic);
+                cls=grid.findViewById(R.id.tabClose);
+
+
+
+
+                title.setText(obj.getTitle());
+                desc.setText(obj.getDesc());
+                img.setImageBitmap(obj.getImage());
+
+
+                cls.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tabss.remove(position);
+                        CacheClass.removeFragment(position);
+
+
+                        isRemovedTab=true;
+                        removedTab=position;
+                        MainActivity.refreshTabCount();
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+
+
+            } else {
+                grid = (View) view;
+            }
+
+
+
+            return grid;
+        }
     }
 
 

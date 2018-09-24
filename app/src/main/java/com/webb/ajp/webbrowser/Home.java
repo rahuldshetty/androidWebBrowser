@@ -48,6 +48,11 @@ public class Home extends Fragment {
         datas.add(new WebsiteData("https:www.google.com",R.drawable.icons8google480,"Google"));
         datas.add(new WebsiteData("https:www.youtube.com",R.drawable.icons8playbutto480,"Youtube"));
         datas.add(new WebsiteData("https:mobile.twitter.com",R.drawable.icons8twitter480,"Twitter"));
+        datas.add(new WebsiteData("https:www.gmail.com",R.drawable.icons8gmail500,"Gmail"));
+        datas.add(new WebsiteData("https:www.yahoo.com",R.drawable.icons8yahoo480,"Yahoo"));
+        datas.add(new WebsiteData("https://www.wikipedia.org/",R.drawable.icons8wikipedia512,"Wikipedia"));
+        datas.add(new WebsiteData("https://www.amazon.com/",R.drawable.icons8amazon512,"Amazon"));
+
 
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,7 +87,7 @@ public class Home extends Fragment {
         CacheClass.addToWebFragment(frag);
         ft.replace(R.id.frameLayout, frag);
         ft.commit();
-        CacheClass.cureWebFragment=CacheClass.getSize()-1;
+        CacheClass.cureWebFragment=CacheClass.getSize()-1   ;
         //-****s ++
         MainActivity.refreshTabCount();
     }
